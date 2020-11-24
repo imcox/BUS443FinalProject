@@ -1,0 +1,89 @@
+{% extends "studentinfo/base.html" %}
+{% block content %}
+
+ <div class="container"> 
+    <div class="jumbotron text-center"> 
+      <h1>Student Enrollment</h1> 
+    </div> 
+</div>
+
+<div class="container">
+    <select id="nm">
+      <option selected="">Select Student</option>
+      {% for nm in studentinfo %}
+          <option value="{{ nm.studentid }}">{{ nm.firstname + nm.lastname}}</option>
+      {% endfor %}
+    </select>
+</div>
+
+<div class="container">
+    <select id="ctitle">
+      <option selected="">Select Class</option>
+      {% for ctitle in studentinfo %}
+          <option value="{{ ctitle.coursetitle }}">{{ ctitle.coursetitle  }}</option>
+      {% endfor %}
+    </select>
+    <br/>
+    <br/>
+    <button type="button" id="enrollbtn" class="btn btn-dark">Enroll</button>
+    <br/>
+</div>
+<div class="container">
+    <table class="table">
+        <thead>
+          <tr>
+              <th> Student Name</th>
+              <th> Course Title</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in coursetitle %}
+          <tr>
+              <td>{{ row.firstname + row.lastname }}</td>
+              <td>{{ row.coursetitle }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+  $(document).ready(function(){
+
+      $("#enrollbtn").click(function(){
+          $.ajax({
+
+              url: "{% url 'enroll' %}"
+              data: {
+                nm: $("#nm").val(),
+                ctitle: $("#ctitle").val()
+              },
+              success: function(data){
+                  if(data=='Success'){
+                      window.location = "{% url 'enroll' %}"
+                  }
+                  else {
+                      alert("Student is already enrolled in this course")
+                  }
+              }
+          });
+
+      });
+
+      $("#nm").change(function(){
+          $.ajax({
+              url: "{% url 'enroll' %}"
+              data: {
+                  nm: $("#nm").val()
+              },
+              success: function(data){
+                  window.location = "{% url 'enroll' %}"
+              }
+          });
+
+      });
+
+  });
+</script>
+
+{% endblock %}
